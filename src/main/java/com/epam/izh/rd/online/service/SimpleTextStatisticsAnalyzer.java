@@ -15,6 +15,8 @@ import static java.util.Collections.*;
  */
 public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
 
+    private final String regx = "[\\s,.!\"-]+";
+
     /**
      * Необходимо реализовать функционал подсчета суммарной длины всех слов (пробелы, знаким препинания итд не считаются).
      * Например для текста "One, I - tWo!!" - данный метод должен вернуть 7.
@@ -23,7 +25,12 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public int countSumLengthOfWords(String text) {
-        return 0;
+        String[] words = (text == null) ? new String[0] : text.split(regx);
+        int sum = 0;
+        for (String word : words) {
+            sum += word.length();
+        }
+        return sum;
     }
 
     /**
@@ -34,7 +41,7 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public int countNumberOfWords(String text) {
-        return 0;
+        return (text == null) ? 0 : text.split(regx).length;
     }
 
     /**
@@ -44,7 +51,10 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public int countNumberOfUniqueWords(String text) {
-        return 0;
+        Set<String> set = new HashSet<>();
+        String[] words = (text == null) ? new String[0] : text.split(regx);
+        addAll(set, words);
+        return set.size();
     }
 
     /**
@@ -57,7 +67,10 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public List<String> getWords(String text) {
-        return emptyList();
+        List<String> list = new ArrayList<>();
+        String[] words = (text == null) ? new String[0] : text.split(regx);
+        addAll(list, words);
+        return list;
     }
 
     /**
@@ -70,7 +83,8 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public Set<String> getUniqueWords(String text) {
-        return emptySet();
+        String[] words = (text == null) ? new String[0] : text.split(regx);
+        return new HashSet<>(Arrays.asList(words));
     }
 
     /**
@@ -82,7 +96,17 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public Map<String, Integer> countNumberOfWordsRepetitions(String text) {
-        return emptyMap();
+        Map<String, Integer> hashMap = new HashMap<>();
+        String[] words = (text == null) ? new String[0] : text.split(regx);
+
+        for (String word : words) {
+            if (hashMap.containsKey(word)) {
+                hashMap.put(word, hashMap.get(word) + 1);
+            } else {
+                hashMap.put(word, 1);
+            }
+        }
+        return hashMap;
     }
 
     /**
@@ -95,6 +119,13 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
      */
     @Override
     public List<String> sortWordsByLength(String text, Direction direction) {
-        return emptyList();
+        List<String> list = getWords(text);
+
+        if (direction == Direction.ASC) {
+            list.sort(Comparator.comparingInt(String::length));
+        } else {
+            list.sort((a, b) -> Integer.compare(b.length(), a.length()));
+        }
+        return list;
     }
 }
