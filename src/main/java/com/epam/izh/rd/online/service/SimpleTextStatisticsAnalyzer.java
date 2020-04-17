@@ -17,6 +17,7 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
 
     private final String regx = "[\\s,.!\"-]+";
 
+
     /**
      * Необходимо реализовать функционал подсчета суммарной длины всех слов (пробелы, знаким препинания итд не считаются).
      * Например для текста "One, I - tWo!!" - данный метод должен вернуть 7.
@@ -121,10 +122,13 @@ public class SimpleTextStatisticsAnalyzer implements TextStatisticsAnalyzer {
     public List<String> sortWordsByLength(String text, Direction direction) {
         List<String> list = getWords(text);
 
-        if (direction == Direction.ASC) {
-            list.sort(Comparator.comparingInt(String::length));
-        } else {
-            list.sort((a, b) -> Integer.compare(b.length(), a.length()));
+        switch (direction) {
+            case ASC:
+                list.sort(Comparator.comparingInt(String::length));
+                break;
+            case DESC:
+                list.sort((a, b) -> Integer.compare(b.length(), a.length()));
+                break;
         }
         return list;
     }
